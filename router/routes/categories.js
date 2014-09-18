@@ -11,9 +11,18 @@ function loadCategories(){
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res) {
-  //TODO: Need to implement.
-  res.send('Success!');
+var redis = require("redis");
+var client = redis.createClient();
+
+router.get('/', function (req, res) {
+
+  var categories = loadCategories();
+  client.set('categories',JSON.stringify(categories));
+
+  client.get('categories', function (err, obj) {
+    res.json(JSON.parse(obj));
+  });
+
 });
 
 module.exports = router;
