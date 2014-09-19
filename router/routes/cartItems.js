@@ -19,7 +19,7 @@ router.post('/', function (req, res) {
   client.set('cartItems', cartItems, function (err, obj) {
     res.send('success');
   });
-  
+
 });
 
 module.exports = router;
