@@ -7,7 +7,7 @@ var client = redis.createClient();
 router.get('/', function (req, res) {
 
   client.get('cartItems', function (err, obj) {
-    res.json(JSON.parse(obj));
+    res.send(obj);
   });
 
 });
