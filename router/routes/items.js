@@ -15,13 +15,13 @@ var router = express.Router();
 var redis = require("redis");
 var client = redis.createClient();
 
+var items = loadItems();
+client.set('items',JSON.stringify(items));
+
 router.get('/', function (req, res) {
 
-  var items = loadItems();
-  client.set('items',JSON.stringify(items));
-
   client.get('items', function (err, obj) {
-    res.json(JSON.parse(obj));
+    res.send(obj);
   });
 
 });
