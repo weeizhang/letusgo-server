@@ -17,7 +17,7 @@ router.post('/', function (req, res) {
   var cartItems = req.param('cartItems');
 
   client.set('cartItems', cartItems, function (err, obj) {
-    res.send('success');
+    res.send(obj);
   });
 
 });
