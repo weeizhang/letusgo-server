@@ -31,7 +31,6 @@ router.post('/', function (req, res) {
 
   client.set('categories', categories, function (err, obj) {
     res.send(obj);
-    console.log('test:' + obj);
   });
 
 });
