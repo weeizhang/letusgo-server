@@ -26,4 +26,14 @@ router.get('/', function (req, res) {
 
 });
 
+router.post('/', function (req, res) {
+
+  var items = req.param('items');
+
+  client.set('items', items, function (err, obj) {
+    res.send(obj);
+  });
+
+});
+
 module.exports = router;
