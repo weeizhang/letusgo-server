@@ -1,3 +1,8 @@
+var express = require('express');
+var router = express.Router();
+var redis = require('redis');
+var client = redis.createClient();
+
 function loadItems(){
   var item1 = {'barcode': 'ITEM000000', 'name': '可口可乐', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
   var item2 = {'barcode': 'ITEM000001', 'name': '雪碧', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
@@ -9,31 +14,20 @@ function loadItems(){
   return items;
 }
 
-var express = require('express');
-var router = express.Router();
-
-var redis = require("redis");
-var client = redis.createClient();
-
 var items = loadItems();
 client.set('items',JSON.stringify(items));
 
 router.get('/', function (req, res) {
-
   client.get('items', function (err, obj) {
     res.send(obj);
   });
-
 });
 
 router.post('/', function (req, res) {
-
   var items = req.param('items');
-
-  client.set('items', items, function (err, obj) {
+  client.set('items', JSON.stringify(items), function (err, obj) {
     res.send(obj);
   });
-
 });
 
 module.exports = router;
