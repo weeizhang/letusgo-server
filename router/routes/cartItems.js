@@ -30,7 +30,9 @@ function updateCartItem(id, cartItem, callback) {
 function removeCartItem(id, callback) {
   client.get('cartItems', function (err, obj) {
     obj = JSON.parse(obj);
-    var index = _.findIndex(obj, {'id': parseInt(id)});
+    var index = _.findIndex(obj, function(item){
+      return item.item.id === parseInt(id);
+    });
     obj[index].num--;
     if (obj[index].num <= 0) {
       _.remove(obj, obj[index]);
