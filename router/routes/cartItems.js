@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 function addCartItem(item, callback) {
   client.get('cartItems', function (err, obj) {
-    obj = JSON.parse(obj);
+    obj = JSON.parse(obj) || [];
     if (_.any(obj, {'item': item})) {
       var index = _.findIndex(obj, {'item': item});
       obj[index].num++;
