@@ -33,6 +33,15 @@ function addItem(item, callback) {
   });
 }
 
+function removeItem(id, callback) {
+  client.get('items', function (err, obj) {
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
+    obj.splice(index, 1);
+    callback(obj);
+  });
+}
+
 var items = loadItems();
 client.set('items', JSON.stringify(items));
 
@@ -53,7 +62,12 @@ router.put('/:id', function (req, res) {
 });
 
 router.delete('/:id', function (req, res) {
-  res.send('test');
+  var id = req.params.id;
+  removeItem(id, function(data){
+    client.set('items', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
+  });
 });
 
 router.post('/', function (req, res) {
