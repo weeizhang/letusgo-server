@@ -13,11 +13,11 @@ function loadCategories() {
   return categories;
 }
 
-function addCategory(catagory, callback) {
+function addCategory(category, callback) {
   client.get('categories', function (err, obj) {
     obj = JSON.parse(obj);
-    catagory.id = obj[obj.length - 1].id + 1;
-    obj[obj.length] = catagory;
+    category.id = obj[obj.length - 1].id + 1;
+    obj[obj.length] = category;
     callback(obj);
   });
 }
@@ -50,7 +50,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-  var category = req.param('categories');
+  var category = req.param('category');
   addCategory(category, function(data) {
     client.set('categories', JSON.stringify(data), function (err, obj) {
       res.send(data);
