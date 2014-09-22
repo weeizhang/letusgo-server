@@ -30,7 +30,7 @@ function updateCartItem(id, cartItem, callback) {
 function removeCartItem(id, callback) {
   client.get('cartItems', function (err, obj) {
     obj = JSON.parse(obj);
-    var index = _.findIndex(obj, function(item){
+    var index = _.findIndex(obj, function (item) {
       return item.item.id === parseInt(id);
     });
     obj[index].num--;
@@ -68,10 +68,16 @@ router.put('/:id', function (req, res) {
 
 router.delete('/:id', function (req, res) {
   var id = req.params.id;
-  removeCartItem(id, function(data){
+  removeCartItem(id, function (data) {
     client.set('cartItems', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
+  });
+});
+
+router.delete('/', function (req, res) {
+  client.del('cartItems', function (err, obj) {
+    res.send(obj);
   });
 });
 
