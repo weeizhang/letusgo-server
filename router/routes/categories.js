@@ -13,6 +13,24 @@ function loadCategories() {
   return categories;
 }
 
+function addCategory(catagory, callback) {
+  client.get('categories', function (err, obj) {
+    obj = JSON.parse(obj);
+    catagory.id = obj[obj.length - 1].id + 1;
+    obj[obj.length] = catagory;
+    callback(obj);
+  });
+}
+
+function putCategory(id, catagory, callback) {
+  client.get('categories', function (err, obj) {
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
+    obj[index] = catagory;
+    callback(obj);
+  });
+}
+
 var categories = loadCategories();
 client.set('categories', JSON.stringify(categories));
 
@@ -23,9 +41,21 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-  var categories = req.param('categories');
-  client.set('categories', categories, function (err, obj) {
-    res.send(obj);
+  var category = req.param('categories');
+  addCategory(category, function(data) {
+    client.set('categories', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
+  });
+});
+
+router.put('/:id', function (req, res) {
+  var category = req.param('category');
+  var id = req.params.id;
+  putCategory(id, category, function (data) {
+    client.set('categories', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
   });
 });
 
