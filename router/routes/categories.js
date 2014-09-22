@@ -31,6 +31,15 @@ function putCategory(id, catagory, callback) {
   });
 }
 
+function removeCategory(id, callback) {
+  client.get('categories', function (err, obj) {
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
+    obj.splice(index, 1);
+    callback(obj);
+  });
+}
+
 var categories = loadCategories();
 client.set('categories', JSON.stringify(categories));
 
@@ -53,6 +62,15 @@ router.put('/:id', function (req, res) {
   var category = req.param('category');
   var id = req.params.id;
   putCategory(id, category, function (data) {
+    client.set('categories', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
+  });
+});
+
+router.delete('/:id', function (req, res) {
+  var id = req.params.id;
+  removeCategory(id, function(data){
     client.set('categories', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
