@@ -13,6 +13,24 @@ function addCartItem(cartItem, callback) {
   });
 }
 
+function updateCartItem(id, cartItem, callback) {
+  client.get('cartItems', function (err, obj) {
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
+    obj[index] = cartItem;
+    callback(obj);
+  });
+}
+
+function removeCartItem(id, callback) {
+  client.get('cartItems', function (err, obj) {
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
+    obj.splice(index, 1);
+    callback(obj);
+  });
+}
+
 router.get('/', function (req, res) {
   client.get('cartItems', function (err, obj) {
     res.send(obj);
@@ -22,6 +40,25 @@ router.get('/', function (req, res) {
 router.post('/', function (req, res) {
   var cartItem = req.param('cartItem');
   addCartItem(cartItem, function (data) {
+    client.set('cartItems', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
+  });
+});
+
+router.put('/:id', function (req, res) {
+  var cartItem = req.param('cartItem');
+  var id = req.params.id;
+  updateCartItem(id, cartItem, function (data) {
+    client.set('cartItems', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
+  });
+});
+
+router.delete('/:id', function (req, res) {
+  var id = req.params.id;
+  removeCartItem(id, function(data){
     client.set('cartItems', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
