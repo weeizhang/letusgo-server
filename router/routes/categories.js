@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var redis = require("redis");
 var client = redis.createClient();
+var _ = require('lodash');
 
 function loadCategories() {
   var categories = [
@@ -51,7 +52,7 @@ router.get('/', function (req, res) {
 
 router.post('/', function (req, res) {
   var category = req.param('category');
-  addCategory(category, function(data) {
+  addCategory(category, function (data) {
     client.set('categories', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
@@ -70,7 +71,7 @@ router.put('/:id', function (req, res) {
 
 router.delete('/:id', function (req, res) {
   var id = req.params.id;
-  removeCategory(id, function(data){
+  removeCategory(id, function (data) {
     client.set('categories', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
