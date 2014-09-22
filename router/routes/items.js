@@ -2,20 +2,38 @@ var express = require('express');
 var router = express.Router();
 var redis = require('redis');
 var client = redis.createClient();
+var _ = require('lodash');
 
-function loadItems(){
-  var item1 = {'barcode': 'ITEM000000', 'name': '可口可乐', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
-  var item2 = {'barcode': 'ITEM000001', 'name': '雪碧', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
-  var item3 = {'barcode': 'ITEM000002', 'name': '苹果', 'unit': '斤', 'price': 5.50, 'category': '水果'};
-  var item4 = {'barcode': 'ITEM000003', 'name': '荔枝', 'unit': '斤', 'price': 15.00, 'category': '水果'};
-  var item5 = {'barcode': 'ITEM000004', 'name': '电池', 'unit': '个', 'price': 2.00, 'category': '生活用品'};
-  var item6 = {'barcode': 'ITEM000005', 'name': '方便面', 'unit': '袋', 'price': 4.50, 'category': '食品'};
+function loadItems() {
+  var item1 = {'id': 1, 'barcode': 'ITEM000000', 'name': '可口可乐', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
+  var item2 = {'id': 2, 'barcode': 'ITEM000001', 'name': '雪碧', 'unit': '瓶', 'price': 3.00, 'category': '饮料'};
+  var item3 = {'id': 3, 'barcode': 'ITEM000002', 'name': '苹果', 'unit': '斤', 'price': 5.50, 'category': '水果'};
+  var item4 = {'id': 4, 'barcode': 'ITEM000003', 'name': '荔枝', 'unit': '斤', 'price': 15.00, 'category': '水果'};
+  var item5 = {'id': 5, 'barcode': 'ITEM000004', 'name': '电池', 'unit': '个', 'price': 2.00, 'category': '生活用品'};
+  var item6 = {'id': 6, 'barcode': 'ITEM000005', 'name': '方便面', 'unit': '袋', 'price': 4.50, 'category': '食品'};
   var items = [item1, item2, item3, item4, item5, item6];
   return items;
 }
 
+function putItem(id, item, callback) {
+  client.get('items', function (err, obj) {
+    var index = _.indexOf(obj, {id: id});
+    obj[index] = item;
+    callback(obj);
+  });
+}
+
+function addItem(item, callback) {
+  client.get('items', function (err, obj) {
+    obj = JSON.parse(obj);
+    item.id = obj[obj.length - 1].id + 1;
+    obj[obj.length] = item;
+    callback(obj);
+  });
+}
+
 var items = loadItems();
-client.set('items',JSON.stringify(items));
+client.set('items', JSON.stringify(items));
 
 router.get('/', function (req, res) {
   client.get('items', function (err, obj) {
@@ -23,10 +41,24 @@ router.get('/', function (req, res) {
   });
 });
 
+router.put('/:id', function (req, res) {
+  var item = req.param('item');
+  var id = req.params.id;
+  putItem(id, item, function (data) {
+    res.send(data);
+  });
+});
+
+router.delete('/:id', function (req, res) {
+  res.send('test');
+});
+
 router.post('/', function (req, res) {
-  var items = req.param('items');
-  client.set('items', JSON.stringify(items), function (err, obj) {
-    res.send(obj);
+  var item = req.param('item');
+  addItem(item, function (data) {
+    client.set('items', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
   });
 });
 
