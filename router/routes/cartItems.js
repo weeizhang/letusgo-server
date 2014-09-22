@@ -4,11 +4,16 @@ var redis = require("redis");
 var client = redis.createClient();
 var _ = require('lodash');
 
-function addCartItem(cartItem, callback) {
+function addCartItem(item, callback) {
   client.get('cartItems', function (err, obj) {
     obj = JSON.parse(obj);
-    cartItem.id = obj[obj.length - 1].id + 1;
-    obj[obj.length] = cartItem;
+    if (_.any(obj, {'item': item})) {
+      var index = _.findIndex(obj, {'item': item});
+      obj[index].num++;
+    } else {
+      var cartItem = {'item': item, 'num': 1};
+      obj.push(cartItem);
+    }
     callback(obj);
   });
 }
