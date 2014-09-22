@@ -17,7 +17,8 @@ function loadItems() {
 
 function putItem(id, item, callback) {
   client.get('items', function (err, obj) {
-    var index = _.indexOf(obj, {id: id});
+    obj = JSON.parse(obj);
+    var index = _.findIndex(obj, {'id': parseInt(id)});
     obj[index] = item;
     callback(obj);
   });
@@ -45,7 +46,9 @@ router.put('/:id', function (req, res) {
   var item = req.param('item');
   var id = req.params.id;
   putItem(id, item, function (data) {
-    res.send(data);
+    client.set('items', JSON.stringify(data), function (err, obj) {
+      res.send(data);
+    });
   });
 });
 
