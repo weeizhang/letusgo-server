@@ -75,10 +75,4 @@ router.delete('/:id', function (req, res) {
   });
 });
 
-router.delete('/', function (req, res) {
-  client.del('cartItems', function (err, obj) {
-    res.send(obj);
-  });
-});
-
 module.exports = router;
