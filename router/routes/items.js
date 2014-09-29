@@ -15,6 +15,13 @@ function loadItems() {
   return items;
 }
 
+function getItemById(id, callback) {
+  client.get('items', function (err, obj) {
+    var item = _.find(obj, {'id': id});
+    callback(item);
+  });
+}
+
 function putItem(id, item, callback) {
   client.get('items', function (err, obj) {
     obj = JSON.parse(obj);
@@ -47,6 +54,13 @@ client.set('items', JSON.stringify(items));
 
 router.get('/', function (req, res) {
   client.get('items', function (err, obj) {
+    res.send(obj);
+  });
+});
+
+router.get('/id', function (req, res) {
+  var id = req.params.id;
+  getItemById(id, function(data) {
     res.send(obj);
   });
 });
