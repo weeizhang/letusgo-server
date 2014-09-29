@@ -17,7 +17,8 @@ function loadItems() {
 
 function getItemById(id, callback) {
   client.get('items', function (err, obj) {
-    var item = _.find(obj, {'id': id});
+    obj = JSON.parse(obj);
+    var item = _.find(obj, {'id': parseInt(id)});
     callback(item);
   });
 }
