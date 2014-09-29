@@ -16,7 +16,8 @@ function loadCategories() {
 
 function getCategoryById(id, callback) {
   client.get('categories', function (err, obj) {
-    var category = _.find(obj, {'id': id});
+    obj = JSON.parse(obj);
+    var category = _.find(obj, {id: parseInt(id)});
     callback(category);
   });
 }
@@ -57,9 +58,10 @@ router.get('/', function (req, res) {
   });
 });
 
-router.get('/id', function (req, res) {
+router.get('/:id', function (req, res) {
   var id = req.params.id;
   getCategoryById(id, function(data) {
+    console.log('test:' + data);
     res.send(data);
   });
 });
