@@ -21,8 +21,7 @@ function findObjectInString(string, id) {
 
 function getItemById(id, callback) {
   client.get('items', function (err, obj) {
-    obj = JSON.parse(obj);
-    var item = _.find(obj, {'id': parseInt(id)});
+    var item = findObjectInString(obj, parseInt(id));
     callback(item);
   });
 }
@@ -65,7 +64,7 @@ router.get('/', function (req, res) {
 
 router.get('/id', function (req, res) {
   var id = req.params.id;
-  getItemById(id, function(data) {
+  getItemById(id, function (data) {
     res.send(obj);
   });
 });
@@ -82,7 +81,7 @@ router.put('/:id', function (req, res) {
 
 router.delete('/:id', function (req, res) {
   var id = req.params.id;
-  removeItem(id, function(data){
+  removeItem(id, function (data) {
     client.set('items', JSON.stringify(data), function (err, obj) {
       res.send(data);
     });
