@@ -14,6 +14,12 @@ function loadCategories() {
   return categories;
 }
 
+function findObjectInString(string, id) {
+  var objects = JSON.parse(string);
+  var result = _.find(objects, {id: id});
+  return result;
+}
+
 function getCategoryById(id, callback) {
   client.get('categories', function (err, obj) {
     obj = JSON.parse(obj);
