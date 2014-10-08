@@ -19,6 +19,11 @@ function findObjectInString(string, id) {
   return _.find(objects, {id: id});
 }
 
+function findIndexInString(string, id) {
+  var objects = JSON.parse(string);
+  return _.findIndex(objects, {id: id});
+}
+
 function getItemById(id, callback) {
   client.get('items', function (err, obj) {
     var item = findObjectInString(obj, parseInt(id));
