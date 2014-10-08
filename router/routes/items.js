@@ -34,8 +34,9 @@ function getItemById(id, callback) {
 function putItem(id, item, callback) {
   client.get('items', function (err, obj) {
     var index = findIndexInString(obj, parseInt(id));
-    obj[index] = item;
-    callback(obj);
+    var objects = JSON.parse(obj);
+    objects[index] = item;
+    callback(objects);
   });
 }
 
@@ -51,8 +52,9 @@ function addItem(item, callback) {
 function removeItem(id, callback) {
   client.get('items', function (err, obj) {
     var index = findIndexInString(obj, parseInt(id));
-    obj.splice(index, 1);
-    callback(obj);
+    var objects = JSON.parse(obj);
+    objects.splice(index, 1);
+    callback(objects);
   });
 }
 
