@@ -43,16 +43,18 @@ function addCategory(category, callback) {
 function putCategory(id, catagory, callback) {
   client.get('categories', function (err, obj) {
     var index = findIndexInString(obj, parseInt(id));
-    obj[index] = catagory;
-    callback(obj);
+    var objects = JSON.parse(obj);
+    objects[index] = catagory;
+    callback(objects);
   });
 }
 
 function removeCategory(id, callback) {
   client.get('categories', function (err, obj) {
     var index = findIndexInString(obj, parseInt(id));
-    obj.splice(index, 1);
-    callback(obj);
+    var objects = JSON.parse(obj);
+    objects.splice(index, 1);
+    callback(objects);
   });
 }
 
