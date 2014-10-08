@@ -19,6 +19,11 @@ function findObjectInString(string, id) {
   return _.find(objects, {id: id});
 }
 
+function findIndexInString(string, id) {
+  var objects = JSON.parse(string);
+  return _.findIndex(objects, {id: id});
+}
+
 function getCategoryById(id, callback) {
   client.get('categories', function (err, obj) {
     var category = findObjectInString(obj, parseInt(id));
@@ -37,8 +42,7 @@ function addCategory(category, callback) {
 
 function putCategory(id, catagory, callback) {
   client.get('categories', function (err, obj) {
-    obj = JSON.parse(obj);
-    var index = _.findIndex(obj, {'id': parseInt(id)});
+    var index = findIndexInString(obj, parseInt(id));
     obj[index] = catagory;
     callback(obj);
   });
@@ -46,8 +50,7 @@ function putCategory(id, catagory, callback) {
 
 function removeCategory(id, callback) {
   client.get('categories', function (err, obj) {
-    obj = JSON.parse(obj);
-    var index = _.findIndex(obj, {'id': parseInt(id)});
+    var index = findIndexInString(obj, parseInt(id));
     obj.splice(index, 1);
     callback(obj);
   });
@@ -64,7 +67,7 @@ router.get('/', function (req, res) {
 
 router.get('/:id', function (req, res) {
   var id = req.params.id;
-  getCategoryById(id, function(data) {
+  getCategoryById(id, function (data) {
     console.log('test:' + data);
     res.send(data);
   });
