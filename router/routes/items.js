@@ -14,6 +14,11 @@ function loadItems() {
   return [item1, item2, item3, item4, item5, item6];
 }
 
+function findObjectInString(string, id) {
+  var objects = JSON.parse(string);
+  return _.find(objects, {id: id});
+}
+
 function getItemById(id, callback) {
   client.get('items', function (err, obj) {
     obj = JSON.parse(obj);
